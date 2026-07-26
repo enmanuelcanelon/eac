@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPR | Story</title>
+<meta name="description" content="A concept recreation of a cyberpunk story experience.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-theme="dark">
+
+<!-- ==================== PRELOADER ==================== -->
+<div id="preloader" class="show">
+  <div class="pre-center">
+    <div class="pre-row mono">
+      <span class="pre-label">Loading</span>
+      <span class="pre-pct">&mdash;&nbsp;<span id="pre-pct">0</span>%</span>
+    </div>
+    <div class="pre-bar"><div class="pre-progress" id="pre-progress"></div></div>
+    <div class="pre-details mono">
+      <span class="pre-icon">&#9678;</span>
+      <span class="pre-file" id="pre-file">kpr_core.sys</span>
+    </div>
+  </div>
+  <button class="pre-enter" id="pre-enter" aria-label="Enter site">
+    <svg class="pre-ring" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-dasharray="70 200" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="1"
+              stroke-dasharray="30 160" stroke-linecap="round" opacity=".6"/>
+      <circle cx="50" cy="50" r="6" fill="currentColor"/>
+    </svg>
+    <span class="pre-enter-copy mono">Click to Enter</span>
+  </button>
+</div>
+
+<!-- ==================== WEBGL-STYLE BACKGROUND ==================== -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- ==================== FRAME CHROME ==================== -->
+<div id="frame" aria-hidden="false">
+  <div class="frame-border"></div>
+
+  <div class="frame-top">
+    <button id="burger" aria-label="Open menu">
+      <span class="b-line"></span>
+      <span class="b-line"></span>
+    </button>
+    <div class="frame-progress">
+      <div class="progress-fill" id="progress-fill"></div>
+      <div class="progress-line" id="progress-line"></div>
+    </div>
+    <nav class="frame-subnav mono" aria-label="Section navigation">
+      <a href="#project" data-nav="project"><i class="dot"></i>Project</a>
+      <a href="#keep" data-nav="keep"><i class="dot"></i>The Keep</a>
+      <a href="#factions" data-nav="factions"><i class="dot"></i>Factions</a>
+      <a href="#world" data-nav="world"><i class="dot"></i>The World</a>
+    </nav>
+    <div class="frame-live mono"><i class="dot dot-pulse"></i><span id="live-count">28</span>&nbsp;Keepers Live</div>
+  </div>
+
+  <div class="frame-left">
+    <div class="rail-logo" aria-hidden="true">
+      <svg viewBox="0 0 40 40" class="icon-mark">
+        <path d="M8 6h6v10l9-10h8L20 19l12 15h-9l-8-11v11H8z" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="rail-bottom">
+      <button id="btn-audio" class="rail-btn" aria-label="Toggle audio">
+        <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
+      </button>
+      <button id="btn-console" class="rail-btn" aria-label="Open console">
+        <svg viewBox="0 0 20 20" class="icon-console">
+          <path d="M3 4l6 5-6 5M10 14h7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FULLSCREEN MENU ==================== -->
+<div id="menu" aria-hidden="true">
+  <div class="menu-underlay"></div>
+  <div class="menu-panel">
+    <div class="menu-content">
+      <div class="menu-section s-nav">
+        <div class="ms-left mono">Discover</div>
+        <nav class="ms-right">
+          <a class="menu-link is-active" href="#hero"><span class="ml-bg"></span><span class="ml-text">Story</span><sup class="mono">01</sup></a>
+          <a class="menu-link" href="#project"><span class="ml-bg"></span><span class="ml-text">Protocol</span><sup class="mono">02</sup></a>
+          <a class="menu-link" href="#collection"><span class="ml-bg"></span><span class="ml-text">Journal</span><sup class="mono">03</sup></a>
+          <a class="menu-link" href="#collection"><span class="ml-bg"></span><span class="ml-text">Media</span><sup class="mono">04</sup></a>
+          <a class="menu-link" href="#collection"><span class="ml-bg"></span><span class="ml-text">Gallery</span><sup class="mono">05</sup></a>
+          <a class="menu-link" href="#footer"><span class="ml-bg"></span><span class="ml-text">About</span><sup class="mono">06</sup></a>
+        </nav>
+      </div>
+      <div class="menu-section s-social">
+        <div class="ms-left mono">Connect</div>
+        <div class="ms-right col">
+          <a class="menu-sub mono" href="#" rel="noopener">Twitter</a>
+          <a class="menu-sub mono" href="#" rel="noopener">Discord</a>
+        </div>
+      </div>
+      <div class="menu-section s-buy">
+        <div class="ms-left mono">Buy On</div>
+        <div class="ms-right row">
+          <a class="btn-main" href="#" rel="noopener"><span>Opensea</span></a>
+          <span class="buy-divider"></span>
+          <button class="btn-main ghost" id="btn-wallet"><span>Connect Wallet</span></button>
+        </div>
+      </div>
+      <div class="menu-section s-misc mono">
+        <div class="ms-left dim">&copy; 2026</div>
+        <div class="ms-right row">
+          <span class="misc-counter"><i class="dot dot-pulse"></i><span class="live-count-mirror">28</span>&nbsp;Keepers Live</span>
+          <span class="misc-ver">cf95-69476276</span>
+          <span class="misc-region">EN</span>
+        </div>
+      </div>
+    </div>
+    <div class="menu-bar">
+      <button id="menu-close" aria-label="Close menu">
+        <svg viewBox="0 0 16 16"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+      <div class="rail-logo" aria-hidden="true">
+        <svg viewBox="0 0 40 40" class="icon-mark">
+          <path d="M8 6h6v10l9-10h8L20 19l12 15h-9l-8-11v11H8z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CONSOLE ==================== -->
+<div id="console" aria-hidden="true">
+  <div class="console-underlay"></div>
+  <div class="console-panel">
+    <div class="console-bar mono">
+      <div class="cb-left">
+        <span class="cb-title">
+          <svg viewBox="0 0 20 20" class="icon-console"><path d="M3 4l6 5-6 5M10 14h7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          KPR Protocol
+        </span>
+        <span class="cb-session">Session 0xA4F2</span>
+        <span class="cb-version">v2.4.1</span>
+      </div>
+      <div class="cb-right">
+        <span class="cb-barcode" aria-hidden="true">|||&#2750;||&#2750;|||&#2750;|&#2750;||</span>
+        <button id="console-close" aria-label="Close console">
+          <svg viewBox="0 0 16 16"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="console-body">
+      <div class="console-scroll" id="console-scroll">
+        <div class="console-log mono" id="console-log">
+          <p>//Encrypted Protocol &mdash; link established</p>
+          <p>//Type HELP or select a command below</p>
+        </div>
+        <div class="command-list mono">
+          <button class="command-item" data-cmd="help"><span class="ct">Help</span><span class="cd">List all commands</span></button>
+          <button class="command-item" data-cmd="story"><span class="ct">Story</span><span class="cd">Return to the beginning</span></button>
+          <button class="command-item" data-cmd="gallery"><span class="ct">Gallery</span><span class="cd">View the collection</span></button>
+          <button class="command-item" data-cmd="audio"><span class="ct">Audio</span><span class="cd">Toggle sound</span></button>
+          <button class="command-item" data-cmd="clear"><span class="ct">Clear</span><span class="cd">Purge terminal</span></button>
+        </div>
+      </div>
+      <div class="console-input-row mono">
+        <span class="ci-icon">></span>
+        <div class="ci-visual">
+          <span class="ci-typed" id="ci-typed"></span><span class="ci-caret" id="ci-caret"></span><span class="ci-placeholder" id="ci-placeholder">Type your command</span>
+        </div>
+        <input id="console-input" type="text" autocomplete="off" spellcheck="false" aria-label="Console command input">
+        <button class="ci-enter" id="ci-enter">Enter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE ==================== -->
+<main id="page">
+
+  <!-- HERO -->
+  <section id="hero" class="sec" data-theme="dark">
+    <div class="hero-inner">
+      <div class="hero-tag mono"><i class="dot"></i>Keep&nbsp;&nbsp;//&nbsp;&nbsp;Protect&nbsp;&nbsp;//&nbsp;&nbsp;Reimagine</div>
+      <h1 class="hero-word" id="hero-word">KEEP</h1>
+      <p class="hero-sub">Beyond the walls of the last safe zone, the old world hums with
+        signals waiting to be decoded. You are listening.</p>
+    </div>
+    <div class="hero-readout mono">
+      <div>//Initializing Keeper Story</div>
+      <div>Loading&hellip;[<span id="hero-pct">0</span>%]</div>
+      <div>N 35&deg;27.37&prime;&nbsp;&nbsp;E 139&deg;38.57&prime;</div>
+      <div>TMP 33.8&deg;</div>
+    </div>
+    <div class="scroll-hint mono">Scroll<span class="sh-line"></span></div>
+  </section>
+
+  <!-- INTRO -->
+  <section id="intro" class="sec" data-theme="light">
+    <div class="sec-pad">
+      <div class="caption mono"><i class="dot"></i>01 // The Premise</div>
+      <h2 class="big-statement">
+        <span class="line scramble">A world you know.</span>
+        <span class="line scramble">A timeline you don&rsquo;t.</span>
+      </h2>
+      <div class="intro-cols">
+        <p class="body-copy">The map is the same. The streets, the towers, the coastlines &mdash;
+          all familiar. But history forked somewhere in the static, and everything after the
+          divergence is unwritten.</p>
+        <p class="body-copy">What remains of the old network points to a single archive, a single
+          gate, a single directive: keep what matters. Protect it from what comes next.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECT -->
+  <section id="project" class="sec" data-theme="dark">
+    <div class="sec-pad">
+      <div class="caption mono"><i class="dot"></i>02 // The Project</div>
+      <div class="project-grid">
+        <div class="project-visual">
+          <div class="visual-card corner-frame" data-visual="signal">
+            <div class="vc-rings" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="vc-core" aria-hidden="true"></div>
+            <div class="vc-caption mono"><span><i class="dot"></i>Signal Fragment</span><span>V.004</span></div>
+          </div>
+        </div>
+        <div class="project-copy">
+          <h3 class="strapline scramble">You are a Keeper.</h3>
+          <p class="body-copy">A sworn guardian of what remains &mdash; and of what comes next.
+            Keepers move between the archive and the wilds, carrying fragments of the old
+            network back to safety.</p>
+          <h3 class="strapline scramble">What will you protect?</h3>
+          <p class="body-copy">Power here is not taken. It is entrusted. What you choose to
+            defend, and what you choose to let go, will redraw the map for everyone who
+            follows your signal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLEAUX: THE KEEP -->
+  <section id="keep" class="sec tableau" data-theme="dark">
+    <div class="tab-visual" data-visual="keep" aria-hidden="true">
+      <div class="tv-radar"><i></i><i></i><i></i><span class="tv-sweep"></span></div>
+    </div>
+    <div class="tab-ui">
+      <div class="tab-readout mono">//Tableaux_01 &mdash; Stronghold&nbsp;&nbsp;|&nbsp;&nbsp;SEC 07 // GATE SEALED</div>
+      <div class="tab-card corner-frame">
+        <div class="caption mono"><i class="dot"></i>03 // The Keep</div>
+        <h2 class="tab-title scramble">The Keep</h2>
+        <p class="body-copy">Every fragment of knowledge worth saving ends up behind one gate.
+          The Keep is the archive, the fortress, and the last lighthouse of the network &mdash;
+          the place where everything of value gathers.</p>
+      </div>
+      <div class="tab-index mono" aria-hidden="true">01</div>
+    </div>
+  </section>
+
+  <!-- TABLEAUX: FACTIONS -->
+  <section id="factions" class="sec tableau" data-theme="lavender">
+    <div class="tab-visual" data-visual="factions" aria-hidden="true">
+      <div class="tv-split"><span class="tvs-half a"></span><span class="tvs-half b"></span><span class="tvs-seam"></span></div>
+    </div>
+    <div class="tab-ui">
+      <div class="tab-readout mono">//Tableaux_02 &mdash; Schism&nbsp;&nbsp;|&nbsp;&nbsp;2 ORDERS DETECTED</div>
+      <div class="tab-card corner-frame">
+        <div class="caption mono"><i class="dot"></i>04 // Factions</div>
+        <h2 class="tab-title scramble">Factions</h2>
+        <p class="body-copy">Two orders claim the same future. One preserves the archive exactly
+          as it was; the other rewrites it into something new. Divided in belief, united in
+          purpose &mdash; and both of them need Keepers.</p>
+      </div>
+      <div class="tab-index mono" aria-hidden="true">02</div>
+    </div>
+  </section>
+
+  <!-- TABLEAUX: THE WORLD -->
+  <section id="world" class="sec tableau" data-theme="dark">
+    <div class="tab-visual" data-visual="world" aria-hidden="true">
+      <div class="tv-horizon"><span class="tvh-glow"></span><span class="tvh-line"></span><span class="tvh-grid"></span></div>
+    </div>
+    <div class="tab-ui">
+      <div class="tab-readout mono">//Tableaux_03 &mdash; Expanse&nbsp;&nbsp;|&nbsp;&nbsp;SIGNAL ORIGIN: UNKNOWN</div>
+      <div class="tab-card corner-frame">
+        <div class="caption mono"><i class="dot"></i>05 // The World</div>
+        <h2 class="tab-title scramble">The World</h2>
+        <p class="body-copy">When the signal was first decoded, it promised a golden age &mdash;
+          limitless energy drawn from the noise between stations. Signals always promise
+          something. The expanse keeps the truth.</p>
+      </div>
+      <div class="tab-index mono" aria-hidden="true">03</div>
+    </div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="collection" class="sec" data-theme="light">
+    <div class="sec-pad">
+      <div class="caption mono"><i class="dot"></i>06 // The Collection</div>
+      <h2 class="collection-title">
+        <span class="count" id="count" data-target="10000">0</span>
+        <span class="ct-line scramble">unique Keepers.</span>
+      </h2>
+      <p class="body-copy wide">Every Keeper is assembled from over 400 hand-drawn traits and
+        sealed as a one-of-one artifact of the network. No two signals match. No two stories
+        unfold the same way.</p>
+      <div class="trait-stats mono">
+        <div class="ts-item"><span class="ts-k">Collection Size</span><span class="ts-v">10K</span></div>
+        <div class="ts-item"><span class="ts-k">Hand-Drawn Traits</span><span class="ts-v">400+</span></div>
+        <div class="ts-item"><span class="ts-k">Edition</span><span class="ts-v">1 of 1</span></div>
+        <div class="ts-item"><span class="ts-k">Chain</span><span class="ts-v">Mainnet</span></div>
+      </div>
+      <div class="keeper-grid">
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="0"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0143</span><span>Spectral ID</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="1"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0287</span><span>Signal Suite</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="2"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0391</span><span>Static Veil</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="3"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0520</span><span>Night Relay</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="4"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0666</span><span>Echo Frame</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="5"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0742</span><span>Pulse Array</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="6"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0815</span><span>Deep Cache</span></figcaption></figure>
+        <figure class="keeper-card corner-frame"><span class="kc-art" data-hue="7"></span><figcaption class="mono"><span><i class="dot"></i>Keeper #0999</span><span>Last Light</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAUNCH -->
+  <section id="launch" class="sec" data-theme="dark">
+    <div class="launch-inner">
+      <div class="tab-readout mono">//Launch_Sequence &mdash; standby</div>
+      <h2 class="launch-title scramble">Become a Keeper</h2>
+      <p class="body-copy">The gate opens soon. Choose your path, and carry the archive forward.</p>
+      <div class="launch-cta">
+        <a class="btn-main big" href="#" rel="noopener"><span>Launch &mdash; TBA</span></a>
+        <div class="launch-date mono">Launch at&nbsp;&nbsp;//&nbsp;&nbsp;TBA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer" data-theme="dark">
+    <div class="foot-cols">
+      <div class="fc">
+        <div class="caption mono"><i class="dot"></i>Discover More</div>
+        <a class="foot-link mono" href="#hero">Story</a>
+        <a class="foot-link mono" href="#collection">Journal</a>
+        <a class="foot-link mono" href="#collection">Media</a>
+        <a class="foot-link mono" href="#collection">Gallery</a>
+        <a class="foot-link mono" href="#footer">About</a>
+        <a class="foot-link mono" href="#" rel="noopener">Careers</a>
+      </div>
+      <div class="fc">
+        <div class="caption mono"><i class="dot"></i>Join the Conversation</div>
+        <a class="foot-link mono" href="#" rel="noopener">Twitter</a>
+        <a class="foot-link mono" href="#" rel="noopener">Discord</a>
+      </div>
+      <div class="fc">
+        <div class="caption mono"><i class="dot"></i>More Details</div>
+        <p class="foot-note mono">Contact us at <a href="mailto:hello@example.com">hello@example.com</a></p>
+        <a class="btn-main ghost" href="#" rel="noopener"><span>Download Brand Book</span></a>
+      </div>
+    </div>
+    <div class="foot-mark" aria-hidden="true">
+      <svg viewBox="0 0 600 160" preserveAspectRatio="xMidYMid meet">
+        <text x="300" y="128" text-anchor="middle" class="fm-text">KPR</text>
+      </svg>
+    </div>
+    <div class="foot-legal mono">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Legal License</a>
+      <span class="fl-copy">&copy; 2026 &mdash; Concept Recreation</span>
+    </div>
+  </footer>
+
+</main>
+
+<script src="js/main.js"></script>
+</body>
+</html>
